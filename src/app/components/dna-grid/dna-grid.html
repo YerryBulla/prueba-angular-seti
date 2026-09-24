@@ -1,27 +1,35 @@
 <div class="dna-app">
-  <header class="dna-app__header">
-    <h1>🧬 Detector de ADN Mutante</h1>
-    <p>Ingresa una matriz de ADN (N x N) usando solo las bases A, T, C, G y verifica si pertenece a un mutante.</p>
-  </header>
+  <section class="hero">
+    <div class="hero__decor" aria-hidden="true"></div>
+    <div class="hero__content">
+      <span class="hero__eyebrow">SETI LABS · DNA SCANNER</span>
+      <h1>🧬 Detector de ADN Mutante</h1>
+      <p>Ingresa una matriz de ADN (N x N) usando solo las bases A, T, C, G y verifica si pertenece a un mutante.</p>
+    </div>
+  </section>
 
-  <section class="dna-app__controls">
-    <label class="size-control">
-      Tamaño de la matriz
-      <input
-        type="number"
-        [min]="minSize"
-        [max]="maxSize"
-        [value]="size()"
-        (change)="changeSize($any($event.target).valueAsNumber)"
-      />
-      (N x N, entre {{ minSize }} y {{ maxSize }})
-    </label>
+  <section class="card">
+    <div class="card__row">
+      <label class="size-control">
+        <span class="card__label">Tamaño de la matriz</span>
+        <span class="size-control__input">
+          <input
+            type="number"
+            [min]="minSize"
+            [max]="maxSize"
+            [value]="size()"
+            (change)="changeSize($any($event.target).valueAsNumber)"
+          />
+          <span class="size-control__hint">N x N, entre {{ minSize }} y {{ maxSize }}</span>
+        </span>
+      </label>
+    </div>
 
     <div class="button-row">
-      <button type="button" (click)="loadExample('mutant')">Cargar ejemplo mutante</button>
-      <button type="button" (click)="loadExample('human')">Cargar ejemplo no-mutante</button>
-      <button type="button" (click)="togglePasteBox()">
-        {{ showPasteBox() ? 'Ocultar' : 'Pegar secuencia' }}
+      <button type="button" class="pill" (click)="loadExample('mutant')">Cargar ejemplo mutante</button>
+      <button type="button" class="pill" (click)="loadExample('human')">Cargar ejemplo no-mutante</button>
+      <button type="button" class="pill pill--ghost" (click)="togglePasteBox()">
+        {{ showPasteBox() ? 'Ocultar' : '📋 Pegar secuencia' }}
       </button>
     </div>
 
@@ -33,12 +41,12 @@
           [value]="pastedInput()"
           (input)="pastedInput.set($any($event.target).value)"
         ></textarea>
-        <button type="button" (click)="applyPastedInput()">Cargar en la grilla</button>
+        <button type="button" class="pill" (click)="applyPastedInput()">Cargar en la grilla</button>
       </div>
     }
   </section>
 
-  <section class="dna-app__grid" aria-label="Matriz de ADN">
+  <section class="card grid-card" aria-label="Matriz de ADN">
     <table>
       <tbody>
         @for (row of grid(); track $index; let rowIndex = $index) {
@@ -56,9 +64,16 @@
         }
       </tbody>
     </table>
+
+    <ul class="legend">
+      <li><span class="dot hl-horizontal"></span> Horizontal</li>
+      <li><span class="dot hl-vertical"></span> Vertical</li>
+      <li><span class="dot hl-diagonal-right"></span> Diagonal ↘</li>
+      <li><span class="dot hl-diagonal-left"></span> Diagonal ↙</li>
+    </ul>
   </section>
 
-  <section class="dna-app__actions">
+  <section class="actions">
     <button type="button" class="verify-btn" (click)="verify()">Verificar ADN</button>
   </section>
 
@@ -68,13 +83,16 @@
 
   @if (result(); as analysis) {
     <div class="banner" [class.banner--mutant]="analysis.isMutant" [class.banner--human]="!analysis.isMutant">
-      @if (analysis.isMutant) {
-        <strong>Mutante detectado</strong>
-        <span>Se encontraron {{ analysis.matches.length }} secuencia(s) de 4 bases iguales.</span>
-      } @else {
-        <strong>ADN humano estándar</strong>
-        <span>No se encontraron suficientes secuencias repetidas para ser mutante.</span>
-      }
+      <span class="banner__status-dot"></span>
+      <div class="banner__text">
+        @if (analysis.isMutant) {
+          <strong>Mutante detectado</strong>
+          <span>Se encontraron {{ analysis.matches.length }} secuencia(s) de 4 bases iguales.</span>
+        } @else {
+          <strong>ADN humano estándar</strong>
+          <span>No se encontraron suficientes secuencias repetidas para ser mutante.</span>
+        }
+      </div>
     </div>
 
     @if (analysis.matches.length > 0) {

@@ -1,59 +1,115 @@
-# MutantDetector
+﻿# 🧬 Mutant Detector
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.0.
+Aplicacion Angular que determina si una secuencia de ADN pertenece a un mutante,
+desarrollada como prueba tecnica.
 
-## Development server
+Un humano es **mutante** si su ADN (una matriz NxN de bases `A`, `T`, `C`, `G`)
+contiene **mas de una secuencia de 4 letras iguales consecutivas**, en sentido
+horizontal, vertical u oblicuo (diagonal).
 
-To start a local development server, run:
+## Demo
 
-```bash
-ng serve
+La pantalla principal permite:
+
+- Editar directamente una grilla NxN (selects por celda) para armar el ADN.
+- Cambiar el tamano de la matriz (entre 4 y 10).
+- Cargar los ejemplos de la prueba con un clic ("mutante" / "no-mutante").
+- Pegar una secuencia en formato `["ATGCGA","CAGTGC",...]` o texto plano.
+- Verificar el ADN y ver el resultado, con las secuencias encontradas
+  **resaltadas por color** segun su direccion (igual que el material de referencia
+  de la prueba): verde = diagonal, azul = vertical, rojo = horizontal.
+
+## Algoritmo (isMutant)
+
+La logica vive en `src/app/core/mutant-detector.ts` como una funcion pura, sin
+dependencias de Angular, con la firma pedida:
+
+```ts
+isMutant(dna: string[]): boolean
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Caracteristicas:
 
-## Code scaffolding
+- **Complejidad O(N^2)**: recorre cada celda una unica vez y evalua las 4
+  direcciones posibles (horizontal, vertical, diagonal derecha y diagonal
+  izquierda) con trabajo constante por celda.
+- **Corte temprano (short-circuit)**: apenas se detecta la segunda secuencia de
+  4 bases iguales, la funcion retorna `true` de inmediato sin seguir
+  escaneando el resto de la matriz.
+- **Validacion de entrada**: lanza `InvalidDnaError` si el ADN no es una matriz
+  NxN o contiene caracteres distintos de A, T, C, G.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Para la UI existe ademas `findDnaMatches(dna)`, que recorre toda la matriz (sin
+corte temprano) para poder resaltar todas las coincidencias encontradas.
 
-```bash
-ng generate component component-name
+## Estructura del proyecto
+
+```
+src/app/
+|-- core/
+|   |-- mutant-detector.ts        # isMutant, findDnaMatches, validacion (logica pura)
+|   |-- mutant-detector.spec.ts
+|   |-- dna-input-parser.ts       # Parseo de texto pegado a arreglo de ADN
+|   `-- dna-input-parser.spec.ts
+|-- services/
+|   |-- mutant.service.ts         # Wrapper Angular (Injectable) sobre la logica pura
+|   `-- mutant.service.spec.ts
+|-- components/dna-grid/
+|   |-- dna-grid.ts               # Componente standalone con la pantalla principal
+|   |-- dna-grid.html
+|   |-- dna-grid.scss
+|   `-- dna-grid.spec.ts
+`-- app.ts / app.html             # Shell de la aplicacion
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Requisitos
+
+- Node.js 20+
+- Angular CLI 22 (se puede usar via npx sin instalacion global)
+
+## Como correrlo
+
+Instalar dependencias:
 
 ```bash
-ng generate --help
+npm install
 ```
 
-## Building
-
-To build the project run:
+Levantar el servidor de desarrollo:
 
 ```bash
-ng build
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Abrir `http://localhost:4200/` en el navegador.
 
-## Running unit tests
+## Tests
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+El proyecto usa Vitest (test runner por defecto de Angular CLI 22):
 
 ```bash
-ng test
+npm test
 ```
 
-## Running end-to-end tests
+Incluye pruebas unitarias para:
 
-For end-to-end (e2e) testing, run:
+- El algoritmo `isMutant` (caso mutante, no-mutante, bordes, errores de validacion).
+- `findDnaMatches` (deteccion y ubicacion de secuencias).
+- El parser de texto pegado.
+- El servicio Angular `MutantService`.
+- El componente `DnaGrid` (carga de ejemplos, verificacion, resize de grilla).
+
+## Build de produccion
 
 ```bash
-ng e2e
+npm run build
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Los artefactos quedan en `dist/mutant-detector`.
 
-## Additional Resources
+## Ejemplo de la prueba
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```ts
+const dna = ["ATGCGA","CAGTGC","TTATGT","AGAAGG","CCCCTA","TCACTG"];
+// isMutant(dna) === true
+```

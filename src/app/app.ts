@@ -1,12 +1,10 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
+import { DnaGrid } from './components/dna-grid/dna-grid';
 
 @Component({
-  imports: [RouterOutlet],
+  imports: [DnaGrid],
   selector: 'app-root',
   styleUrl: './app.scss',
   templateUrl: './app.html',
 })
-export class App {
-  protected readonly title = signal('mutant-detector');
-}
+export class App {}

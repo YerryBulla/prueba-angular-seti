@@ -1,0 +1,92 @@
+<div class="dna-app">
+  <header class="dna-app__header">
+    <h1>🧬 Detector de ADN Mutante</h1>
+    <p>Ingresa una matriz de ADN (N x N) usando solo las bases A, T, C, G y verifica si pertenece a un mutante.</p>
+  </header>
+
+  <section class="dna-app__controls">
+    <label class="size-control">
+      Tamaño de la matriz
+      <input
+        type="number"
+        [min]="minSize"
+        [max]="maxSize"
+        [value]="size()"
+        (change)="changeSize($any($event.target).valueAsNumber)"
+      />
+      (N x N, entre {{ minSize }} y {{ maxSize }})
+    </label>
+
+    <div class="button-row">
+      <button type="button" (click)="loadExample('mutant')">Cargar ejemplo mutante</button>
+      <button type="button" (click)="loadExample('human')">Cargar ejemplo no-mutante</button>
+      <button type="button" (click)="togglePasteBox()">
+        {{ showPasteBox() ? 'Ocultar' : 'Pegar secuencia' }}
+      </button>
+    </div>
+
+    @if (showPasteBox()) {
+      <div class="paste-box">
+        <textarea
+          rows="3"
+          placeholder='Pega un arreglo, ej: ["ATGCGA","CAGTGC","TTATGT","AGAAGG","CCCCTA","TCACTG"]'
+          [value]="pastedInput()"
+          (input)="pastedInput.set($any($event.target).value)"
+        ></textarea>
+        <button type="button" (click)="applyPastedInput()">Cargar en la grilla</button>
+      </div>
+    }
+  </section>
+
+  <section class="dna-app__grid" aria-label="Matriz de ADN">
+    <table>
+      <tbody>
+        @for (row of grid(); track $index; let rowIndex = $index) {
+          <tr>
+            @for (base of row; track $index; let colIndex = $index) {
+              <td [class]="cellClasses(rowIndex, colIndex)">
+                <select (change)="updateCell(rowIndex, colIndex, $any($event.target).value)">
+                  @for (option of bases; track option) {
+                    <option [value]="option" [selected]="option === base">{{ option }}</option>
+                  }
+                </select>
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </section>
+
+  <section class="dna-app__actions">
+    <button type="button" class="verify-btn" (click)="verify()">Verificar ADN</button>
+  </section>
+
+  @if (errorMessage(); as message) {
+    <div class="banner banner--error" role="alert">⚠️ {{ message }}</div>
+  }
+
+  @if (result(); as analysis) {
+    <div class="banner" [class.banner--mutant]="analysis.isMutant" [class.banner--human]="!analysis.isMutant">
+      @if (analysis.isMutant) {
+        <strong>Mutante detectado</strong>
+        <span>Se encontraron {{ analysis.matches.length }} secuencia(s) de 4 bases iguales.</span>
+      } @else {
+        <strong>ADN humano estándar</strong>
+        <span>No se encontraron suficientes secuencias repetidas para ser mutante.</span>
+      }
+    </div>
+
+    @if (analysis.matches.length > 0) {
+      <ul class="matches-list">
+        @for (match of analysis.matches; track $index) {
+          <li>
+            <span class="dot" [class]="'hl-' + match.direction"></span>
+            {{ match.direction }} — fila {{ match.positions[0].row + 1 }}, columna
+            {{ match.positions[0].col + 1 }}
+          </li>
+        }
+      </ul>
+    }
+  }
+</div>

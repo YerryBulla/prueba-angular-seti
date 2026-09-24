@@ -1,0 +1,177 @@
+.dna-app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  font-family: system-ui, sans-serif;
+  color: #1f2430;
+
+  &__header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+
+    h1 {
+      margin-bottom: 0.25rem;
+    }
+
+    p {
+      color: #555;
+    }
+  }
+
+  &__controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  &__grid {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+
+    table {
+      border-collapse: collapse;
+    }
+
+    td {
+      border: 1px solid #ccc;
+      padding: 0;
+      text-align: center;
+    }
+
+    select {
+      width: 2.5rem;
+      height: 2.5rem;
+      border: none;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 600;
+      background: transparent;
+      cursor: pointer;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+}
+
+.size-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  input {
+    width: 4rem;
+    padding: 0.25rem;
+  }
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+button {
+  border: 1px solid #888;
+  background: #f5f5f5;
+  border-radius: 6px;
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+
+  &:hover {
+    background: #e8e8e8;
+  }
+}
+
+.verify-btn {
+  background: #2d6cdf;
+  color: #fff;
+  border-color: #2d6cdf;
+  font-weight: 600;
+  padding: 0.6rem 1.5rem;
+
+  &:hover {
+    background: #1f52ab;
+  }
+}
+
+.paste-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  textarea {
+    font-family: monospace;
+    padding: 0.5rem;
+  }
+}
+
+.banner {
+  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+
+  &--error {
+    background: #fdecea;
+    color: #922b1f;
+  }
+
+  &--mutant {
+    background: #fde2e2;
+    color: #8a1f1f;
+  }
+
+  &--human {
+    background: #e3f7e8;
+    color: #1f6d34;
+  }
+}
+
+.matches-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+}
+
+.dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+// Highlight colors per sequence direction, matching the reference image.
+.hl-diagonal-right {
+  background-color: rgba(46, 160, 67, 0.35);
+}
+
+.hl-vertical {
+  background-color: rgba(37, 99, 235, 0.35);
+}
+
+.hl-horizontal {
+  background-color: rgba(220, 38, 38, 0.35);
+}
+
+.hl-diagonal-left {
+  background-color: rgba(217, 119, 6, 0.35);
+}
